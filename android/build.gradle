@@ -94,8 +94,8 @@ dependencies {
     }
 
 
-//    implementation("com.tencent.tmf.android:qmui:1.4.2")
-//    implementation("com.tencent.tmf.android:qmui-arch:1.4.1")
+    implementation("com.tencent.tmf.android:qmui:1.4.2")
+    implementation("com.tencent.tmf.android:qmui-arch:1.4.1")
     /////////////////////tmf组件依赖 start////////////////////////////
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.core:core-ktx:1.10.1")

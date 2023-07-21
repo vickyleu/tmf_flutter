@@ -1,0 +1,68 @@
+include ':app'
+
+gradle.beforeProject({ project->  // flutter的bug,如果指定armv7和arm64,armv7不会打包libflutter.so 的动态库,导致在32位手机上会崩溃
+    if(project.hasProperty("target-platform")){
+        project.setProperty("target-platform", "android-arm,android-arm64")//,android-arm64  //flutter打包记得开启,flutter engine 动态构建属性,在纯Android模式下会报错
+    }
+    project.afterEvaluate {
+        if(project.hasProperty("android")){
+
+            if(project.android.hasProperty("applicationVariants")){
+
+
+                project.android.applicationVariants.all { variant ->
+                    def variantName = variant.name.capitalize()
+
+                    project.tasks.each { task ->
+                        println("project.android.JniLibsFor= ${task.toString()}")
+                    }
+//                    def multidexTask = project.tasks.findByName("merge${variantName}NativeLibs")
+                    def multidexTask = project.tasks.findByName("transformNativeLibsWithMergeJniLibsFor${variantName}")
+                    if (multidexTask != null) {
+                        def copyFlutterSoTask = createCopyFlutterSoTask(variant)
+                        multidexTask.finalizedBy copyFlutterSoTask
+                    }
+                }
+            }
+        }
+    }
+})
+
+def copyFile(String src, String dest) {
+    println "libflutter src: " + src + " dest: " + dest
+    def srcFile = new File(src)
+    def targetFile = new File(dest)
+    targetFile.withOutputStream { os ->
+        srcFile.withInputStream { ins ->
+            os << ins
+        }
+    }
+}
+
+def createCopyFlutterSoTask(variant) {
+    def variantName = variant.name.capitalize()
+
+    return task("replace${variantName}FlutterArm").doLast {
+
+        def root = rootDir.getParentFile().getAbsolutePath() + File.separator + "build" + File.separator + "app" + File.separator + "intermediates" + File.separator +
+                "transforms" + File.separator + "mergeJniLibs" + File.separator + variantName + File.separator + "0" + File.separator + "lib";
+
+        String fromFilePath = root + File.separator + "armeabi-v7a" + File.separator + "libflutter.so"
+        String foFilePath = root + File.separator + "armeabi" + File.separator + "libflutter.so"
+        copyFile(fromFilePath, foFilePath)
+        File foFile = new File(foFilePath)
+        if (!foFile.exists() || foFile.length() < 100) {
+            throw new GradleException("copyFlutter libflutter.so error please check")
+        }
+    }
+}
+
+def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
+def properties = new Properties()
+
+assert localPropertiesFile.exists()
+localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+
+def flutterSdkPath = properties.getProperty("flutter.sdk")
+assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"

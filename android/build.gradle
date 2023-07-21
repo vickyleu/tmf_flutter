@@ -1,0 +1,137 @@
+group 'com.uoocuniversity.tmf_flutter'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.8.21'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdk 31
+    namespace  "com.uoocuniversity.tmf_flutter"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+                events "passed", "skipped", "failed", "standardOut", "standardError"
+                outputs.upToDateWhen {false}
+                showStandardStreams = true
+            }
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("com.tencent.tmf.android:base:3.0.1.7")
+    }
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "org.mockito:mockito-core:5.3.1"
+    compileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
+    testCompileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
+    compileOnly("com.tencent.tmf.android:share:2.0.0.8-322-75d19ab9-SNAPSHOT")
+    compileOnly("com.tencent.tmf.android:WeChatSDK:6.8.0")
+
+
+
+    implementation(fileTree("libs") { include("*.jar", "*.aar") })
+    implementation("com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0")
+
+    //组件化库
+    api("com.tencent.tmf.android:portal-annotations:3.0.0.0-204-209c7708-SNAPSHOT")
+    api("com.tencent.tmf.android:portal-core:3.0.0.0") {
+        exclude group:'com.tencent.tmf.android',module: 'base-core'
+        exclude group:'com.tencent.tmf.android',module: 'shark'
+        exclude group:'com.tencent.tmf.android',module: 'wup'
+//            exclude(group = "com.tencent.tmf.android", module = "base-core")
+//            exclude(group = "com.tencent.tmf.android", module = "shark")
+//            exclude(group = "com.tencent.tmf.android", module = "wup")
+    }
+
+
+    implementation("com.tencent.tmf.android:qmui:1.4.2")
+    implementation("com.tencent.tmf.android:qmui-arch:1.4.1")
+    /////////////////////tmf组件依赖 start////////////////////////////
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.core:core-ktx:1.10.1")
+    //gosn
+    implementation("com.google.code.gson:gson:2.10.1")
+    // ok-http
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
+
+    //静态版内核依赖
+    implementation("com.tencent.tmf.android:tbscore:20230612_164654_20230612_164654")
+    implementation("com.tencent.tmf.android:mini_extra_static_x5:1.4.4.0-47-42ed2389-SNAPSHOT")
+    api("com.tencent.tmf.android:mini_core:1.4.83.5")
+
+    //扫码扩展组件
+    implementation("com.tencent.tmf.android:mini_extra_qrcode:1.4.3.0")
+
+    //腾讯地图start
+    implementation("com.tencent.tmf.android:mini_extra_map:1.4.2.0")
+    implementation("com.tencent.map:tencent-map-vector-sdk:4.5.10")
+    // 地图组件库，包括小车平移、点聚合等组件功能，详见开发指南。
+    implementation("com.tencent.map:sdk-utilities:1.0.7")
+    // 定位组件
+    implementation("com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.4.7")
+    //腾讯地图end
+    //直播流组件
+    implementation("com.tencent.tmf.android:mini_extra_trtc_live:1.4.2-SNAPSHOT")
+
+    implementation("com.github.bumptech.glide:glide:4.15.1") {
+        exclude(group: "com.android.support")
+    }
+    //v8库，一般不需要添加，特殊场景才需要
+    implementation("com.tencent.tmf.android:mini_extra_v8:1.4.0.0")
+
+
+    kapt("com.tencent.tmf.android:portal-processor:3.0.0.0")
+    kapt("com.qmuiteam:arch-compiler:2.0.0-alpha10")
+    kapt("com.tencent.tmf.android:mini_annotation_processor:1.4.1.1-102-af590ec8-SNAPSHOT")
+    kapt("com.github.bumptech.glide:compiler:4.15.1")
+}

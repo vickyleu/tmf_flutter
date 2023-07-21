@@ -9,7 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import android.widget.Toast
-import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager
+//import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager
 import com.tencent.tmf.base.api.utils.AppUtil
 import com.tencent.tmf.mini.api.TmfMiniSDK
 import com.tencent.tmf.mini.api.bean.MiniCode
@@ -89,7 +89,7 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 return@let
             }
         }
-        QMUISwipeBackActivityManager.init(aware.application)
+//        QMUISwipeBackActivityManager.init(aware.application)
         CommonSp.instance.putPrivacyAuth(aware.application, true)
         aware.runOnUiThread {
             callback.invoke(Result.success(Unit))

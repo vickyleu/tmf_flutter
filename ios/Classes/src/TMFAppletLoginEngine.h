@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "TMFMiniAppSDKManager.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^LoginHandler)(NSError* _Nullable);

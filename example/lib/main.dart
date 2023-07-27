@@ -31,6 +31,8 @@ class _MyAppState extends State<MyApp> {
               .openAppletId("tmf50bbymfr06vcixz", TMAVersion.Develop, {"token": "123"});
           // _tmfFlutterPlugin.openAppletLink("tmf://applet/?appId=tmf50bbymfr06vcixz&type=1&businessId=6991&timestamp=1689323164448",{"token":"123"});
         }
+      }).catchError((onError){
+        print("错误原因:${onError}");
       });
       // item.appId=tmf50bbymfr06vcixz
       // item.appVerType=1

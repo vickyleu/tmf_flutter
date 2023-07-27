@@ -74,13 +74,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:5.3.1"
     compileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
     testCompileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
+
+
     compileOnly("com.tencent.tmf.android:share:2.0.0.8-322-75d19ab9-SNAPSHOT")
     compileOnly("com.tencent.tmf.android:WeChatSDK:6.8.0")
-
-
-
-    compileOnly(fileTree("libs") { include("*.jar", "*.aar") })
-    compileOnly("com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0")
 
     //组件化库
     api("com.tencent.tmf.android:portal-annotations:3.0.0.0-204-209c7708-SNAPSHOT")
@@ -94,8 +91,22 @@ dependencies {
     }
 
 
-//    compileOnly("com.tencent.tmf.android:qmui:1.4.2")
-//    compileOnly("com.tencent.tmf.android:qmui-arch:1.4.1")
+
+//    compileOnly(fileTree("libs") { include("*.jar", "*.aar") })
+//    compileOnly("com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0")
+//    //静态版内核依赖
+//    api("com.tencent.tmf.android:tbscore:20230612_164654_20230612_164654")
+
+
+
+    compileOnly(fileTree("libs") { include("*.jar", "*.aar") })
+    implementation("com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0")
+    //静态版内核依赖
+    api("com.tencent.tmf.android:tbscore:20230612_164654_20230612_164654")
+
+
+
+
     /////////////////////tmf组件依赖 start////////////////////////////
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.core:core-ktx:1.10.1")
@@ -104,8 +115,7 @@ dependencies {
     // ok-http
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
 
-    //静态版内核依赖
-    compileOnly("com.tencent.tmf.android:tbscore:20230612_164654_20230612_164654")
+
     implementation("com.tencent.tmf.android:mini_extra_static_x5:1.4.4.0-47-42ed2389-SNAPSHOT")
     api("com.tencent.tmf.android:mini_core:1.4.83.5")
 
@@ -126,8 +136,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.1") {
         exclude(group: "com.android.support")
     }
-    //v8库，一般不需要添加，特殊场景才需要
-    implementation("com.tencent.tmf.android:mini_extra_v8:1.4.0.0")
+//    //v8库，一般不需要添加，特殊场景才需要
+//    implementation("com.tencent.tmf.android:mini_extra_v8:1.4.0.0")
 
 
     kapt("com.tencent.tmf.android:portal-processor:3.0.0.0")

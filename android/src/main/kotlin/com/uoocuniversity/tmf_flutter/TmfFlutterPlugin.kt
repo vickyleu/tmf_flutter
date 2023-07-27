@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import android.util.Log
 import android.widget.Toast
 //import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager
 import com.tencent.tmf.base.api.utils.AppUtil
@@ -149,7 +150,6 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 val miniStartOptions = MiniStartOptions()
                 miniStartOptions.resultReceiver = receiver
                 miniStartOptions.params = "token=${Uri.encode(token)}" //传递参数
-                println("嘿嘿嘿123789 ${simpleFormatter.format(Date())}")
                 aware.runOnUiThread{
                     TmfMiniSDK.startMiniApp(
                         aware,
@@ -166,12 +166,9 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 val data = message.data
                 val token = data["token"] ?: ""
                 val link = data["link"] ?: ""
-
-
                 val miniStartOptions = MiniStartLinkOptions()
                 miniStartOptions.resultReceiver = receiver
                 miniStartOptions.params = "token=${Uri.encode(token)}" //传递参数
-                println("嘿嘿嘿1230000 ${simpleFormatter.format(Date())}")
                 aware.runOnUiThread {
                     TmfMiniSDK.startMiniAppByLink(
                         aware,

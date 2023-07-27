@@ -44,6 +44,9 @@ class TmfFlutter {
       case TMAVersion.Local:
         data["appVerType"] = "10";
         break;
+      default:
+        data["appVerType"] = "0";
+        break;
     }
     return sendMessage(Code.TmfId, data);
   }

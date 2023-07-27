@@ -27,6 +27,9 @@ A new Flutter project for tencent tmf mini program plugins.
   # ***************************
   s.static_framework = true
 
+  #s.frameworks = 'CoreGraphics', 'Foundation', 'UIKit', 'Security'
+  #s.libraries = 'bz', 'z'
+
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = {
           'DEFINES_MODULE' => 'YES',

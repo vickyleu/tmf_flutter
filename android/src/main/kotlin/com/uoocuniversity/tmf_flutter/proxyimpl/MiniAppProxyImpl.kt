@@ -308,29 +308,30 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
         miniAppContext: IMiniAppContext,
         builder: MoreItemList.Builder
     ): ArrayList<MoreItem> {
-        val item1 = MoreItem()
-        item1.id = ShareProxyImpl.Companion.OTHER_MORE_ITEM_1
-        item1.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_other1)
-        item1.drawable = R.mipmap.mini_demo_about
-        val item2 = MoreItem()
-        item2.id = ShareProxyImpl.Companion.OTHER_MORE_ITEM_2
-        item2.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_other2)
-        item2.shareKey = SHARE_TWITTER //自定义分享的key,必须设置且唯一，与小程序端调用控制设置时会使用到
-        item2.drawable = R.mipmap.mini_demo_about
-        val item3 = MoreItem()
-        item3.id = DemoMoreItemSelectedListener.Companion.CLOSE_MINI_APP
-        item3.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_float_app)
-        item3.drawable = R.mipmap.mini_demo_about
+//        val item1 = MoreItem()
+//        item1.id = ShareProxyImpl.Companion.OTHER_MORE_ITEM_1
+//        item1.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_other1)
+//        item1.drawable = R.mipmap.mini_demo_about
+//        val item2 = MoreItem()
+//        item2.id = ShareProxyImpl.Companion.OTHER_MORE_ITEM_2
+//        item2.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_other2)
+//        item2.shareKey = SHARE_TWITTER //自定义分享的key,必须设置且唯一，与小程序端调用控制设置时会使用到
+//        item2.drawable = R.mipmap.mini_demo_about
+//        val item3 = MoreItem()
+//        item3.id = DemoMoreItemSelectedListener.Companion.CLOSE_MINI_APP
+//        item3.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_float_app)
+//        item3.drawable = R.mipmap.mini_demo_about
         val item4 = MoreItem()
         item4.id = ShareProxyImpl.Companion.OTHER_MORE_ITEM_INVALID
         item4.text = getString(miniAppContext, R.string.applet_mini_proxy_impl_out_of_effect)
         item4.drawable = R.mipmap.mini_demo_about
 
         // 自行调整顺序。
-        builder.addMoreItem(item1)
+        builder
+           /* .addMoreItem(item1)
             .addMoreItem(item2)
-            .addShareQQ("QQ", R.mipmap.mini_demo_channel_qq)
-            .addMoreItem(item3)
+            .addMoreItem(item3)*/
+           /* .addShareQQ("QQ", R.mipmap.mini_demo_channel_qq)
             .addShareQzone(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_Qzone),
                 R.mipmap.mini_demo_channel_qzone
@@ -342,12 +343,12 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
             .addShareWxMoments(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_wechat_group),
                 R.mipmap.mini_demo_channel_wx_moment
-            )
+            )*/
             .addRestart(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_restart),
                 R.mipmap.mini_demo_restart_miniapp
             )
-            .addAbout(
+           /* .addAbout(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_about),
                 R.mipmap.mini_demo_about
             )
@@ -359,6 +360,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_performance),
                 R.mipmap.mini_demo_about
             )
+            */
             .addComplaint(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_complain_and_report),
                 R.mipmap.mini_demo_browser_report

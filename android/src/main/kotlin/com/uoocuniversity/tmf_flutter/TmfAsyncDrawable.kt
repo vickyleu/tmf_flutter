@@ -1,5 +1,6 @@
 package com.uoocuniversity.tmf_flutter
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -21,6 +22,7 @@ class TmfAsyncDrawable : Drawable() {
     }
 
     fun loadImage(context: Context, uri: String): TmfAsyncDrawable {
+        if(context is Activity && context.isDestroyed)return this
         Glide.with(context)
             .asBitmap()
             .load(uri)

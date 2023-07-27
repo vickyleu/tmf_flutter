@@ -14,7 +14,7 @@ class DemoMoreItemSelectedListener : DefaultMoreItemSelectedListener() {
                 return
             }
 
-            ShareProxyImpl.Companion.OTHER_MORE_ITEM_1 -> {
+           /* ShareProxyImpl.Companion.OTHER_MORE_ITEM_1 -> {
                 miniAppContext.attachedActivity.runOnUiThread {
                     Toast.makeText(
                         miniAppContext.attachedActivity,
@@ -23,7 +23,7 @@ class DemoMoreItemSelectedListener : DefaultMoreItemSelectedListener() {
                     ).show()
                 }
                 return
-            }
+            }*/
         }
 
         //处理内置分享和开发者自定义分享，例如：微博、twitter等

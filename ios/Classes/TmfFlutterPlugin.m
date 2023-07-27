@@ -27,9 +27,14 @@
 
 
 - (void)loginTmfAccount:(NSString *)account password:(NSString *)password isOpenLogin:(NSNumber *)isOpenLogin completion:(void (^)(NSNumber *, FlutterError *))completion {
-    [[TMFAppletLoginEngine sharedInstance]loginWithName:account andPassword:password inMode:TMADevelopLoginModeOpenUser callbackHandler:^(NSError * _Nullable error) {
+    
+    TMADevelopLoginMode mode = isOpenLogin? TMADevelopLoginModeOpenUser : TMADevelopLoginModeManager;
+    
+    [[TMFAppletLoginEngine sharedInstance] setLoginMode: mode];
+    [[TMFAppletLoginEngine sharedInstance]loginWithName:account andPassword:password inMode:mode callbackHandler:^(NSError * _Nullable error) {
         if(error!=nil){
-            completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:error.userInfo.description details:nil]);
+            NSString *descriptionValue = [error.userInfo objectForKey:@"NSLocalizedDescription"];
+            completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:descriptionValue details:nil]);
         }else{
             [[TMFMiniAppSDKManager sharedInstance] updateCustomizedUserID:account];
             completion(@(YES),nil);
@@ -84,7 +89,8 @@
                                                                       scene:TMAEntrySceneAIOEntry firstPage:nil paramsStr:[NSString stringWithFormat:@"token=%@",token]
                                                                    parentVC:[self getCurrentViewController] completion:^(NSError * _Nullable error) {
                 if(error !=nil){
-                    completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:error.userInfo.description details:nil]);
+                    NSString *descriptionValue = [error.userInfo objectForKey:@"NSLocalizedDescription"];
+                    completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:descriptionValue details:nil]);
                 }else{
                     completion(@(YES),nil);
                 }
@@ -96,9 +102,11 @@
             NSDictionary<NSString *, NSString *> * data = message.data;
             NSString* token = data[@"token"];
             NSString* link = data[@"link"];
-            [ [TMFMiniAppSDKManager sharedInstance] startUpMiniAppWithLink:link scene:TMAEntrySceneNone parentVC:[self getCurrentViewController] completion:^(NSError * _Nullable error) {
+            
+            [ [TMFMiniAppSDKManager sharedInstance] startUpMiniAppWithLink:link scene:TMAEntrySceneSearch parentVC:[self getCurrentViewController] completion:^(NSError * _Nullable error) {
                 if(error !=nil){
-                    completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:error.userInfo.description details:nil]);
+                    NSString *descriptionValue = [error.userInfo objectForKey:@"NSLocalizedDescription"];
+                    completion(@(NO),[FlutterError errorWithCode:[@(error.code) stringValue] message:descriptionValue details:nil]);
                 }else{
                     completion(@(YES),nil);
                 }

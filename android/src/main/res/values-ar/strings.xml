@@ -112,7 +112,7 @@
     <string name="applet_mini_proxy_impl_restart">إعادة بدء</string>
     <string name="applet_mini_proxy_impl_about">حول</string>
     <string name="applet_mini_proxy_impl_complain_and_report">أبلغ عن</string>
-    <string name="applet_mini_proxy_impl_deung">تصحيح</string>
+    <string name="applet_mini_proxy_impl_debug">تصحيح</string>
     <string name="applet_mini_proxy_impl_export_log">سجل</string>
     <string name="applet_mini_proxy_impl_performance">أداء</string>
     <string name="applet_mini_proxy_impl_move_top">قمة</string>

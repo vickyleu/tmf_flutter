@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
-import android.util.Log
 import android.widget.Toast
-//import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager
 import com.tencent.tmf.base.api.utils.AppUtil
 import com.tencent.tmf.mini.api.TmfMiniSDK
 import com.tencent.tmf.mini.api.bean.MiniCode
@@ -26,7 +24,6 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 /** TmfFlutterPlugin */
@@ -34,27 +31,28 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
     private var mActivityAware: Activity? = null
 
     private val simpleFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-    private val receiver: ResultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper()!!)) {
-        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-            if (resultCode == MiniCode.STATUS_CODE_SERVER_REQUEST_DELETE) {
-                //小程序下架逻辑处理, 移除列表小程序
-                val appId = resultData!!.getString(MiniCode.KEY_APPID)
-                val appVerType = resultData.getInt(MiniCode.KEY_APP_VER_TYPE)
+    private val receiver: ResultReceiver =
+        object : ResultReceiver(Handler(Looper.getMainLooper()!!)) {
+            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                if (resultCode == MiniCode.STATUS_CODE_SERVER_REQUEST_DELETE) {
+                    //小程序下架逻辑处理, 移除列表小程序
+                    val appId = resultData!!.getString(MiniCode.KEY_APPID)
+                    val appVerType = resultData.getInt(MiniCode.KEY_APP_VER_TYPE)
 //                mAppAdapter.remove(appId, appVerType)
-            } else if (resultCode != MiniCode.CODE_OK) {
-                //小程序启动错误
-                val errMsg = resultData!!.getString(MiniCode.KEY_ERR_MSG)
-                val aware = mActivityAware ?: return let {
-                    println("当前页面已释放")
-                    return@let
+                } else if (resultCode != MiniCode.CODE_OK) {
+                    //小程序启动错误
+                    val errMsg = resultData!!.getString(MiniCode.KEY_ERR_MSG)
+                    val aware = mActivityAware ?: return let {
+                        println("当前页面已释放")
+                        return@let
+                    }
+                    Toast.makeText(aware, errMsg + resultCode, Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(aware, errMsg + resultCode, Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
-    companion object{
-        fun create(context: Context){
+    companion object {
+        fun create(context: Context) {
             CommonApp.get().onCreate(context.applicationContext as Application)
             val builder = MiniInitConfig.Builder()
             builder.configAssetName(CommonApp.TMF_CONFIGURATIONS)
@@ -65,7 +63,7 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 .privacyAuth(true) //隐私授权
                 .build()
             TmfMiniSDK.init(context.applicationContext as Application, config)
-            if(AppUtil.isMainProcess(context)){
+            if (AppUtil.isMainProcess(context)) {
                 //同意隐私授权
                 TmfMiniSDK.agreePrivacyAuth()
                 //只有隐私授权后才能调用TmfMiniSDK相关API
@@ -110,18 +108,17 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
             callback.invoke(Result.failure(IllegalStateException("当前页面已释放")))
             return@let
         }
-        println("嘿嘿嘿123456 ${simpleFormatter.format(Date())}")
         aware.runOnUiThread {
             TmfMiniSDK.loginTmf(account, password, isOpenLogin) { code, msg, _ ->
-                if (code == MiniCode.CODE_OK){
-                    if(!TmfMiniSDK.isLoginOvertime()){
+                if (code == MiniCode.CODE_OK) {
+                    if (!TmfMiniSDK.isLoginOvertime()) {
                         TmfMiniSDK.setUserId(account)
-                        CommonSp.instance.putUserName(aware.applicationContext,account)
+                        CommonSp.instance.putUserName(aware.applicationContext, account)
                         callback.invoke(Result.success(true))
-                    }else{
+                    } else {
                         callback.invoke(Result.failure(IllegalAccessException("登录超时了")))
                     }
-                }else{
+                } else {
                     callback.invoke(Result.failure(IllegalAccessException(msg)))
                 }
             }
@@ -150,11 +147,11 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 val miniStartOptions = MiniStartOptions()
                 miniStartOptions.resultReceiver = receiver
                 miniStartOptions.params = "token=${Uri.encode(token)}" //传递参数
-                aware.runOnUiThread{
+                aware.runOnUiThread {
                     TmfMiniSDK.startMiniApp(
                         aware,
                         appId,
-                        MiniScene.LAUNCH_SCENE_MAIN_ENTRY,
+                        MiniScene.LAUNCH_SCENE_SEARCH,
                         appVerType,
                         miniStartOptions
                     )

@@ -107,7 +107,7 @@
     <string name="applet_mini_proxy_impl_restart">重启小程序</string>
     <string name="applet_mini_proxy_impl_about">关于</string>
     <string name="applet_mini_proxy_impl_complain_and_report">举报</string>
-    <string name="applet_mini_proxy_impl_deung">调试</string>
+    <string name="applet_mini_proxy_impl_debug">调试</string>
     <string name="applet_mini_proxy_impl_export_log">导出日志</string>
     <string name="applet_mini_proxy_impl_performance">性能</string>
     <string name="applet_mini_proxy_impl_move_top">置顶</string>

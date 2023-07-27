@@ -210,7 +210,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
      * @param fontFamily 字体名
      * @param isBold     是否加粗
      */
-    override fun getTypeFace(context: Context, fontFamily: String, isBold: Boolean): Typeface {
+    override fun getTypeFace(context: Context?, fontFamily: String, isBold: Boolean): Typeface {
         if (context != null) {
             try {
                 val paths = context.assets.list("")
@@ -292,7 +292,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
      */
     override fun getCustomShare(): Map<String, Int> {
         val objects: MutableMap<String, Int> = HashMap()
-        objects[SHARE_TWITTER] = ShareProxyImpl.Companion.OTHER_MORE_ITEM_2
+//        objects[SHARE_TWITTER] = ShareProxyImpl.Companion.OTHER_MORE_ITEM_2
         return objects
     }
 
@@ -352,15 +352,16 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_about),
                 R.mipmap.mini_demo_about
             )
-            .addDebug(
-                getString(miniAppContext, com.tencent.qqmini.R.string.mini_sdk_more_item_debug),
-                R.mipmap.mini_demo_about
-            )
+
             .addMonitor(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_performance),
                 R.mipmap.mini_demo_about
             )
             */
+            .addDebug(
+                getString(miniAppContext, com.tencent.qqmini.R.string.mini_sdk_more_item_debug),
+                R.mipmap.mini_demo_about
+            )
             .addComplaint(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_complain_and_report),
                 R.mipmap.mini_demo_browser_report
@@ -401,12 +402,13 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
     override fun getLiveComponentLicenseKey(): String {
         //仅可用于demo
         return "6ae463dfe484853eef22052ca122623b"
-    } //    @Override
+    }
+    //    @Override
 
     //    public Locale getLocale() {
     //        return Locale.US;
     //    }
-    companion object {
-        private const val SHARE_TWITTER = "twitter"
-    }
+//    companion object {
+//        private const val SHARE_TWITTER = "twitter"
+//    }
 }

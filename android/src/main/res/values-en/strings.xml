@@ -112,7 +112,7 @@
     <string name="applet_mini_proxy_impl_restart">Restart</string>
     <string name="applet_mini_proxy_impl_about">About</string>
     <string name="applet_mini_proxy_impl_complain_and_report">Report</string>
-    <string name="applet_mini_proxy_impl_deung">Denug</string>
+    <string name="applet_mini_proxy_impl_debug">Debug</string>
     <string name="applet_mini_proxy_impl_export_log">Log</string>
     <string name="applet_mini_proxy_impl_performance">Performance</string>
     <string name="applet_mini_proxy_impl_move_top">Top</string>

@@ -1,6 +1,7 @@
 package com.uoocuniversity.tmf_flutter.jsplugin
 
 import android.util.Log
+import com.tencent.tmf.mini.api.TmfMiniSDK
 import com.tencent.tmfmini.sdk.annotation.JsEvent
 import com.tencent.tmfmini.sdk.annotation.JsPlugin
 import com.tencent.tmfmini.sdk.launcher.core.model.RequestEvent
@@ -34,5 +35,18 @@ class CustomPlugin : BaseJsPlugin() {
         //req.jsonParams
         //同步返回数据(必须返回json数据)
         return JSONObject().toString()
+    }
+
+    @JsEvent("log")
+    fun log(req: RequestEvent) {
+        Log.wtf(CommonApp.TAG, "log=>${req.jsonParams}")
+        req.ok(JSONObject())
+    }
+    @JsEvent("destroyTMF")
+    fun destroyTMF(req: RequestEvent) {
+        try {
+            TmfMiniSDK.stopAllMiniApp(this.mContext.applicationContext)
+        }catch (e:Exception){}
+        req.ok(JSONObject())
     }
 }

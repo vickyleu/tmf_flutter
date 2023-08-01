@@ -9,6 +9,7 @@
 #import "NativePluginTest.h"
 #import "TMAExternalJSPlugin.h"
 #import "TMFMiniAppInfo.h"
+#import "TMFMiniAppSDKManager.h"
 
 @implementation NativePluginTest
 
@@ -27,7 +28,20 @@ TMAExternalJSAPI_IMP(test) {
     return pluginResult;
 }
 
-//自定义api demo，使用External JSAPI
+//销毁当前小程序
+TMAExternalJSAPI_IMP(destroyTMF) {
+    TMFMiniAppInfo *appInfo = context.tmfAppInfo;
+
+    [[TMFMiniAppSDKManager sharedInstance] closeAllApplications];
+
+    TMAExternalJSPluginResult *pluginResult = [TMAExternalJSPluginResult new];
+    pluginResult.result = @{};
+    [context doCallback:pluginResult];
+    return pluginResult;
+}
+
+
+//自定义api,打印日志
 TMAExternalJSAPI_IMP(log) {
     NSDictionary *data = params[@"data"];
     NSLog(@"invokeNativePlugin : %@",data);

@@ -7,6 +7,7 @@ import com.tencent.tmfmini.sdk.annotation.JsPlugin
 import com.tencent.tmfmini.sdk.launcher.core.model.RequestEvent
 import com.tencent.tmfmini.sdk.launcher.core.plugins.BaseJsPlugin
 import com.uoocuniversity.tmf_flutter.CommonApp
+import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -42,11 +43,28 @@ class CustomPlugin : BaseJsPlugin() {
         Log.wtf(CommonApp.TAG, "log=>${req.jsonParams}")
         req.ok(JSONObject())
     }
+
     @JsEvent("destroyTMF")
     fun destroyTMF(req: RequestEvent) {
+        Log.wtf(CommonApp.TAG, "destroyTMF")
+        try {
+            CommonSp.instance.removeUserName()
+            TmfMiniSDK.logoutTmf()
+            CommonSp.instance.removeSkipLogin()
+        } catch (ignore: Exception) {
+        }
         try {
             TmfMiniSDK.stopAllMiniApp(this.mContext.applicationContext)
-        }catch (e:Exception){}
+        } catch (ignore: Exception) {
+        }
+        try {
+            TmfMiniSDK.setUserId(null)
+        } catch (ignore: Exception) {
+        }
+        try {
+            this.mMiniAppContext.attachedActivity?.finish()
+        } catch (ignore: Exception) {
+        }
         req.ok(JSONObject())
     }
 }

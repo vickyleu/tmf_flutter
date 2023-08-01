@@ -27,4 +27,15 @@ TMAExternalJSAPI_IMP(test) {
     return pluginResult;
 }
 
+//自定义api demo，使用External JSAPI
+TMAExternalJSAPI_IMP(log) {
+    NSDictionary *data = params[@"data"];
+    NSLog(@"invokeNativePlugin : %@",data);
+    TMAExternalJSPluginResult *pluginResult = [TMAExternalJSPluginResult new];
+    pluginResult.result = @{};
+    [context doCallback:pluginResult];
+    return pluginResult;
+}
+
+
 @end

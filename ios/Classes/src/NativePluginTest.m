@@ -31,9 +31,9 @@ TMAExternalJSAPI_IMP(test) {
 //销毁当前小程序
 TMAExternalJSAPI_IMP(destroyTMF) {
     TMFMiniAppInfo *appInfo = context.tmfAppInfo;
-
-    [[TMFMiniAppSDKManager sharedInstance] closeAllApplications];
-
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[TMFMiniAppSDKManager sharedInstance] closeAllApplications];
+    });
     TMAExternalJSPluginResult *pluginResult = [TMAExternalJSPluginResult new];
     pluginResult.result = @{};
     [context doCallback:pluginResult];

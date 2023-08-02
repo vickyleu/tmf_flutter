@@ -69,8 +69,9 @@ configurations.all {
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
-    testImplementation "org.jetbrains.kotlin:kotlin-test"
     testImplementation "org.mockito:mockito-core:5.3.1"
     compileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
     testCompileOnly("io.flutter:flutter_embedding_debug:1.0.0-c08d7d5efc9aa6eb3c30cfb3be6dc09bca5e7631")
@@ -80,23 +81,13 @@ dependencies {
     compileOnly("com.tencent.tmf.android:WeChatSDK:6.8.0")
 
     //组件化库
-    api("com.tencent.tmf.android:portal-annotations:3.0.0.0-204-209c7708-SNAPSHOT")
+
+    api("com.tencent.tmf.android:portal-annotations:3.0.0.0")
     api("com.tencent.tmf.android:portal-core:3.0.0.0") {
         exclude group:'com.tencent.tmf.android',module: 'base-core'
         exclude group:'com.tencent.tmf.android',module: 'shark'
         exclude group:'com.tencent.tmf.android',module: 'wup'
-//            exclude(group = "com.tencent.tmf.android", module = "base-core")
-//            exclude(group = "com.tencent.tmf.android", module = "shark")
-//            exclude(group = "com.tencent.tmf.android", module = "wup")
     }
-
-
-
-//    compileOnly(fileTree("libs") { include("*.jar", "*.aar") })
-//    compileOnly("com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0")
-//    //静态版内核依赖
-//    api("com.tencent.tmf.android:tbscore:20230612_164654_20230612_164654")
-
 
 
     compileOnly(fileTree("libs") { include("*.jar", "*.aar") })

@@ -217,6 +217,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
             try {
                 val paths = context.assets.list("")
                 for (path in paths!!) {
+                    Log.wtf("insertTextArea","insertTextArea==${path}   $fontFamily.ttf")
                     if (path.equals("$fontFamily.ttf", ignoreCase = true)) {
                         return Typeface.createFromAsset(context.assets, path)
                     }
@@ -225,7 +226,13 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
                 e.printStackTrace()
             }
         }
-        return super.getTypeFace(context, fontFamily, isBold)
+        try {
+            return super.getTypeFace(context, fontFamily, isBold)
+        }catch (e:Exception){
+            e.printStackTrace()
+            return Typeface.DEFAULT
+        }
+
     }
 
     /**

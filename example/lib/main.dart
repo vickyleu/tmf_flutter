@@ -23,6 +23,9 @@ class _MyAppState extends State<MyApp> {
     _tmfFlutterPlugin.initTmf().then((value) async {
       //tmf://applet/?appId=tmf50bbymfr06vcixz&type=1&businessId=6991&timestamp=1689323164448
       _tmfFlutterPlugin
+          ..setLogoutCallback((){
+
+          })
           .loginTmf(account: "shendayouke", password: "sdyk@TMF123")
           .then((value) {
         print("登录结果:${value}");

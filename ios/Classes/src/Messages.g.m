@@ -61,6 +61,37 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 }
 @end
 
+NSObject<FlutterMessageCodec> *PGNTmfFlutterApiGetCodec(void) {
+  static FlutterStandardMessageCodec *sSharedObject = nil;
+  sSharedObject = [FlutterStandardMessageCodec sharedInstance];
+  return sSharedObject;
+}
+
+@interface PGNTmfFlutterApi ()
+@property(nonatomic, strong) NSObject<FlutterBinaryMessenger> *binaryMessenger;
+@end
+
+@implementation PGNTmfFlutterApi
+
+- (instancetype)initWithBinaryMessenger:(NSObject<FlutterBinaryMessenger> *)binaryMessenger {
+  self = [super init];
+  if (self) {
+    _binaryMessenger = binaryMessenger;
+  }
+  return self;
+}
+- (void)logoutWithCompletion:(void (^)(FlutterError *_Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.TmfFlutterApi.logout"
+      binaryMessenger:self.binaryMessenger
+      codec:PGNTmfFlutterApiGetCodec()];
+  [channel sendMessage:nil reply:^(id reply) {
+    completion(nil);
+  }];
+}
+@end
+
 @interface PGNTmfHostApiCodecReader : FlutterStandardReader
 @end
 @implementation PGNTmfHostApiCodecReader

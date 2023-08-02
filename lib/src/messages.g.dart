@@ -50,6 +50,30 @@ class MessageData {
   }
 }
 
+/// Native call Flutter
+abstract class TmfFlutterApi {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  Future<void> logout();
+
+  static void setup(TmfFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.TmfFlutterApi.logout', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          // ignore message
+          await api.logout();
+          return;
+        });
+      }
+    }
+  }
+}
+
 class _TmfHostApiCodec extends StandardMessageCodec {
   const _TmfHostApiCodec();
   @override

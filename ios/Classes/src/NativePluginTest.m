@@ -9,6 +9,7 @@
 #import "NativePluginTest.h"
 #import "TMAExternalJSPlugin.h"
 #import "TMFMiniAppInfo.h"
+#import "TmfFlutterPlugin.h"
 #import "TMFMiniAppSDKManager.h"
 
 @implementation NativePluginTest
@@ -33,6 +34,7 @@ TMAExternalJSAPI_IMP(destroyTMF) {
     TMFMiniAppInfo *appInfo = context.tmfAppInfo;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[TMFMiniAppSDKManager sharedInstance] closeAllApplications];
+        [TmfFlutterPlugin logout];
     });
     TMAExternalJSPluginResult *pluginResult = [TMAExternalJSPluginResult new];
     pluginResult.result = @{};

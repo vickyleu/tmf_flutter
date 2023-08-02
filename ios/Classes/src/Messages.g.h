@@ -37,6 +37,15 @@ typedef NS_ENUM(NSUInteger, PGNTMAVersion) {
 @property(nonatomic, strong) NSDictionary<NSString *, NSString *> * data;
 @end
 
+/// The codec used by PGNTmfFlutterApi.
+NSObject<FlutterMessageCodec> *PGNTmfFlutterApiGetCodec(void);
+
+/// Native call Flutter
+@interface PGNTmfFlutterApi : NSObject
+- (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
+- (void)logoutWithCompletion:(void (^)(FlutterError *_Nullable))completion;
+@end
+
 /// The codec used by PGNTmfHostApi.
 NSObject<FlutterMessageCodec> *PGNTmfHostApiGetCodec(void);
 

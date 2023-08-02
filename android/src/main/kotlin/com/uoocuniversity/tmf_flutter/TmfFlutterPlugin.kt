@@ -18,6 +18,7 @@ import com.tencent.tmf.mini.api.bean.MiniStartLinkOptions
 import com.tencent.tmf.mini.api.bean.MiniStartOptions
 import com.uoocuniversity.tmf_flutter.src.Code
 import com.uoocuniversity.tmf_flutter.src.MessageData
+import com.uoocuniversity.tmf_flutter.src.TmfFlutterApi
 import com.uoocuniversity.tmf_flutter.src.TmfHostApi
 import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -52,6 +53,7 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
         }
 
     companion object {
+        private var flutterApi:TmfFlutterApi?=null
         fun create(context: Context) {
             CommonApp.get().onCreate(context.applicationContext as Application)
             val builder = MiniInitConfig.Builder()
@@ -74,6 +76,10 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
                 )
                 TmfMiniSDK.preloadMiniApp(context, null)
             }
+        }
+
+        fun logout(){
+            flutterApi?.logout {  }
         }
     }
 
@@ -188,10 +194,12 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         TmfHostApi.setUp(binding.binaryMessenger, this)
+        flutterApi = TmfFlutterApi(binding.binaryMessenger)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         TmfHostApi.setUp(binding.binaryMessenger, null)
+        flutterApi = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {

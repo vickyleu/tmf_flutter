@@ -2,17 +2,22 @@ package com.uoocuniversity.tmf_flutter.jsplugin
 
 import android.util.Log
 import com.tencent.tmf.mini.api.TmfMiniSDK
+import com.tencent.tmfmini.sdk.MiniSDK
 import com.tencent.tmfmini.sdk.annotation.JsEvent
 import com.tencent.tmfmini.sdk.annotation.JsPlugin
 import com.tencent.tmfmini.sdk.launcher.core.model.RequestEvent
 import com.tencent.tmfmini.sdk.launcher.core.plugins.BaseJsPlugin
 import com.uoocuniversity.tmf_flutter.CommonApp
+import com.uoocuniversity.tmf_flutter.TmfFlutterPlugin
+import com.uoocuniversity.tmf_flutter.src.TmfFlutterApi
 import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
 import org.json.JSONException
 import org.json.JSONObject
 
 @JsPlugin(secondary = true)
 class CustomPlugin : BaseJsPlugin() {
+
+
     @JsEvent("custom_event")
     fun custom(req: RequestEvent) {
         //获取参数
@@ -48,13 +53,13 @@ class CustomPlugin : BaseJsPlugin() {
     fun destroyTMF(req: RequestEvent) {
         Log.wtf(CommonApp.TAG, "destroyTMF")
         try {
-            CommonSp.instance.removeUserName()
-            TmfMiniSDK.logoutTmf()
-            CommonSp.instance.removeSkipLogin()
+            this.mMiniAppContext.attachedActivity?.finish()
         } catch (ignore: Exception) {
         }
         try {
-            TmfMiniSDK.stopAllMiniApp(this.mContext.applicationContext)
+            CommonSp.instance.removeUserName()
+            TmfMiniSDK.logoutTmf()
+            CommonSp.instance.removeSkipLogin()
         } catch (ignore: Exception) {
         }
         try {
@@ -62,8 +67,16 @@ class CustomPlugin : BaseJsPlugin() {
         } catch (ignore: Exception) {
         }
         try {
-            this.mMiniAppContext.attachedActivity?.finish()
+            TmfMiniSDK.stopAllMiniApp(this.mMiniAppContext.context.applicationContext)
         } catch (ignore: Exception) {
+            Log.wtf("清除缓存","stopAllMiniApp")
+            ignore.printStackTrace()
+        }
+        try {
+            TmfFlutterPlugin.logout()
+        } catch (ignore: Exception) {
+            Log.wtf("清除缓存","stopAllMiniApp")
+            ignore.printStackTrace()
         }
         req.ok(JSONObject())
     }

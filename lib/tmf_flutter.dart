@@ -1,9 +1,16 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:tmf_flutter/src/messages.g.dart';
 export 'package:tmf_flutter/src/messages.g.dart';
 
-class TmfFlutter {
+class TmfFlutter extends TmfFlutterApi{
+
+  TmfFlutter(){
+    TmfFlutterApi.setup(this);
+  }
+
   final TmfHostApi _api = TmfHostApi();
 
   Future<void> initTmf() {
@@ -66,5 +73,20 @@ class TmfFlutter {
 
   Future<bool> sendMessage(Code code, Map<String, String> data) {
     return _api.sendMessage(MessageData(code: code, data: data));
+  }
+
+  TmfFlutter setLogoutCallback(VoidCallback func){
+    _streamController.stream.listen((event) {
+      print("sFlutterApi dart == setLogoutCallback");
+      func();
+    });
+    return this;
+  }
+
+  final StreamController<bool> _streamController = StreamController.broadcast();
+  @override
+  Future<void> logout() async{
+    print("sFlutterApi dart == logout");
+    _streamController.add(true);
   }
 }

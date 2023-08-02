@@ -70,10 +70,30 @@ static char customShouldAutorotateCallbackKey;
 
 
 
+//@interface TmfFlutterPlugin ()
+//@property (nonatomic, strong) PGNTmfFlutterApi* flutterApi;
+//@end
+
+
 @implementation TmfFlutterPlugin
+
+static PGNTmfFlutterApi* sFlutterApi = nil;
+
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     TmfFlutterPlugin* plugin = [[TmfFlutterPlugin alloc]init];
     PGNTmfHostApiSetup(registrar.messenger,(NSObject<PGNTmfHostApi> *)plugin);
+    sFlutterApi = [[PGNTmfFlutterApi alloc]initWithBinaryMessenger: registrar.messenger];
+}
+
+
++(void)logout{
+    NSLog(@"sFlutterApi::::%@",sFlutterApi);
+    if(sFlutterApi){
+        [sFlutterApi logoutWithCompletion:^(FlutterError * _Nullable error) {
+            
+        }];
+    }
 }
 
 - (void)initTmfWithCompletion:(void (^)(FlutterError *))completion {
@@ -128,7 +148,6 @@ static void watchBack(UIViewController *vc) {
             NSLog(@"清除缓存--->>啦");
             [[TMFMiniAppSDKManager sharedInstance] updateCustomizedUserID:nil];
             [[TMFAppletLoginEngine sharedInstance] logout];
-//            [[TMFMiniAppSDKManager sharedInstance] clearMiniAppCache];//TODO 由于startUpMiniAppWithLink无法带参数,清除缓存意味着切换到appid时也是无法打开的
             [vc tmf_removeSwizzledShouldAutorotate];
         }
     }];

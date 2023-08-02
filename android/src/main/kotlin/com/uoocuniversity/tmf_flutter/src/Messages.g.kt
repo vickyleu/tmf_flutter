@@ -93,6 +93,26 @@ data class MessageData (
   }
 }
 
+/**
+ * Native call Flutter
+ *
+ * Generated class from Pigeon that represents Flutter messages that can be called from Kotlin.
+ */
+@Suppress("UNCHECKED_CAST")
+class TmfFlutterApi(private val binaryMessenger: BinaryMessenger) {
+  companion object {
+    /** The codec used by TmfFlutterApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      StandardMessageCodec()
+    }
+  }
+  fun logout(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.TmfFlutterApi.logout", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+}
 @Suppress("UNCHECKED_CAST")
 private object TmfHostApiCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {

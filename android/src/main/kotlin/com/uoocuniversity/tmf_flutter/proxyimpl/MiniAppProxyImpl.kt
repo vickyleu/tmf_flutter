@@ -6,6 +6,8 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.Log
+import com.tencent.tmf.mini.api.TmfMiniSDK
+import com.tencent.tmfmini.sdk.MiniSDK
 import com.tencent.tmfmini.sdk.annotation.ProxyService
 import com.tencent.tmfmini.sdk.launcher.core.IMiniAppContext
 import com.tencent.tmfmini.sdk.launcher.core.proxy.AsyncResult
@@ -279,6 +281,27 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
         miniAppContext: IMiniAppContext,
         onCloseClickedListener: DialogInterface.OnClickListener
     ): Boolean {
+        try {
+            miniAppContext.attachedActivity?.finish()
+        } catch (ignore: Exception) {
+        }
+        try {
+            CommonSp.instance.removeUserName()
+            TmfMiniSDK.logoutTmf()
+            CommonSp.instance.removeSkipLogin()
+        } catch (ignore: Exception) {
+        }
+        try {
+            TmfMiniSDK.setUserId(null)
+        } catch (ignore: Exception) {
+        }
+        try {
+            TmfMiniSDK.stopAllMiniApp(miniAppContext.context.applicationContext)
+        } catch (ignore: Exception) {
+            Log.wtf("清除缓存","stopAllMiniApp")
+            ignore.printStackTrace()
+        }
+
         return false
     }
 

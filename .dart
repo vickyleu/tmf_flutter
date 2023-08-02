@@ -32,6 +32,13 @@ class MessageData {
   final Map<String?, String?> data;
 }
 
+/// Native call Flutter
+@FlutterApi(package: 'com.uoocuniversity.tmf_flutter')
+abstract class TmfFlutterApi {
+  @async
+  void logout();
+}
+
 @HostApi(package: 'com.uoocuniversity.tmf_flutter')
 abstract class TmfHostApi {
   @async

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.Log
 import com.tencent.tmf.mini.api.TmfMiniSDK
-import com.tencent.tmfmini.sdk.MiniSDK
 import com.tencent.tmfmini.sdk.annotation.ProxyService
 import com.tencent.tmfmini.sdk.launcher.core.IMiniAppContext
 import com.tencent.tmfmini.sdk.launcher.core.proxy.AsyncResult
@@ -16,11 +15,11 @@ import com.tencent.tmfmini.sdk.launcher.core.proxy.MiniAppProxy
 import com.tencent.tmfmini.sdk.launcher.ui.MoreItem
 import com.tencent.tmfmini.sdk.launcher.ui.MoreItemList
 import com.tencent.tmfmini.sdk.launcher.ui.OnMoreItemSelectedListener
+import com.uoocuniversity.tmf_flutter.BuildConfig
 import com.uoocuniversity.tmf_flutter.CommonApp.Companion.get
 import com.uoocuniversity.tmf_flutter.R
 import com.uoocuniversity.tmf_flutter.TmfAsyncDrawable
 import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
-import org.json.JSONException
 import org.json.JSONObject
 
 @ProxyService(proxy = MiniAppProxy::class)
@@ -85,7 +84,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
      * 调用环境：主进程
      */
     override fun getAccount(): String {
-        return CommonSp.instance.getUserName(get().application)?:""
+        return CommonSp.instance.getUserName(get().application) ?: ""
     }
 
     /**
@@ -145,8 +144,14 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
                 "avatarUrl",
                 "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F210114%2F1-210114151951.jpg&refer=http%3A%2F%2Fimg.daimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673852149&t=e2a830d9fabd7e0818059d92c3883017"
             )
+            jsonObject.put(
+                "userAvatarUrl",
+                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F210114%2F1-210114151951.jpg&refer=http%3A%2F%2Fimg.daimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673852149&t=e2a830d9fabd7e0818059d92c3883017"
+            )
+            Log.wtf("WxApiPlugin", "getUserInfo:jsonObject::${jsonObject}")
             result.onReceiveResult(true, jsonObject)
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
+            Log.wtf("WxApiPlugin", "Exception::${e.message}")
             e.printStackTrace()
         }
     }
@@ -217,7 +222,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
             try {
                 val paths = context.assets.list("")
                 for (path in paths!!) {
-                    Log.wtf("insertTextArea","insertTextArea==${path}   $fontFamily.ttf")
+                    Log.wtf("insertTextArea", "insertTextArea==${path}   $fontFamily.ttf")
                     if (path.equals("$fontFamily.ttf", ignoreCase = true)) {
                         return Typeface.createFromAsset(context.assets, path)
                     }
@@ -228,7 +233,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
         }
         try {
             return super.getTypeFace(context, fontFamily, isBold)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             return Typeface.DEFAULT
         }
@@ -305,7 +310,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
         try {
             TmfMiniSDK.stopAllMiniApp(miniAppContext.context.applicationContext)
         } catch (ignore: Exception) {
-            Log.wtf("清除缓存","stopAllMiniApp")
+            Log.wtf("清除缓存", "stopAllMiniApp")
             ignore.printStackTrace()
         }
 
@@ -357,45 +362,21 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
         item4.drawable = R.mipmap.mini_demo_about
 
         // 自行调整顺序。
-        builder
-           /* .addMoreItem(item1)
-            .addMoreItem(item2)
-            .addMoreItem(item3)*/
-           /* .addShareQQ("QQ", R.mipmap.mini_demo_channel_qq)
-            .addShareQzone(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_Qzone),
-                R.mipmap.mini_demo_channel_qzone
-            )
-            .addShareWxFriends(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_wechat_friend),
-                R.mipmap.mini_demo_channel_wx_friend
-            )
-            .addShareWxMoments(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_wechat_group),
-                R.mipmap.mini_demo_channel_wx_moment
-            )*/
+        val builderImpl = builder
             .addRestart(
                 getString(miniAppContext, R.string.applet_mini_proxy_impl_restart),
                 R.mipmap.mini_demo_restart_miniapp
             )
-           /* .addAbout(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_about),
-                R.mipmap.mini_demo_about
-            )
-
-            .addMonitor(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_performance),
-                R.mipmap.mini_demo_about
-            )
-            */
-            .addDebug(
+        if (BuildConfig.DEBUG) {
+            builderImpl.addDebug(
                 getString(miniAppContext, com.tencent.qqmini.R.string.mini_sdk_more_item_debug),
                 R.mipmap.mini_demo_about
             )
-            .addComplaint(
-                getString(miniAppContext, R.string.applet_mini_proxy_impl_complain_and_report),
-                R.mipmap.mini_demo_browser_report
-            )
+        }
+        builderImpl.addComplaint(
+            getString(miniAppContext, R.string.applet_mini_proxy_impl_complain_and_report),
+            R.mipmap.mini_demo_browser_report
+        )
             .addSetting(
                 getString(
                     miniAppContext,
@@ -403,7 +384,7 @@ class MiniAppProxyImpl : BaseMiniAppProxyImpl() {
                 ),
                 R.mipmap.mini_demo_setting
             )
-        return builder.build()
+        return builderImpl.build()
     }
 
     private fun getString(miniAppContext: IMiniAppContext, id: Int): String {

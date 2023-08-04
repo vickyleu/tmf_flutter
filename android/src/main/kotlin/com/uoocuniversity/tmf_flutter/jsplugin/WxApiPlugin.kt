@@ -53,11 +53,48 @@ class WxApiPlugin : BaseJsPlugin() {
         val jsonObject = JSONObject()
         try {
             jsonObject.put("key", "wx.getUserInfo")
+            //返回昵称
+            jsonObject.put("nickName", "userInfo测试")
+            //返回头像url
+            jsonObject.put(
+                "avatarUrl",
+                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F210114%2F1-210114151951.jpg&refer=http%3A%2F%2Fimg.daimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673852149&t=e2a830d9fabd7e0818059d92c3883017"
+            )
+            jsonObject.put(
+                "userAvatarUrl",
+                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F210114%2F1-210114151951.jpg&refer=http%3A%2F%2Fimg.daimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673852149&t=e2a830d9fabd7e0818059d92c3883017"
+            )
         } catch (e: JSONException) {
             e.printStackTrace()
         }
         req.ok(jsonObject)
     }
+    /**
+     * 对应小程序wx.getUserInfo调用
+     *
+     * @param req
+     */
+//    @JsEvent("wx.user_image")
+//    fun userImage(req: RequestEvent) {
+//        //获取参数
+//        //req.jsonParams
+//        //异步返回数据
+//        //req.fail();
+//        //req.ok();
+//        Log.wtf("WxApiPlugin", "user_image")
+//        val jsonObject = JSONObject()
+//        try {
+//            jsonObject.put("key", "wx.user_image")
+//            //返回头像url
+//            jsonObject.put(
+//                "user_image",
+//                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F210114%2F1-210114151951.jpg&refer=http%3A%2F%2Fimg.daimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673852149&t=e2a830d9fabd7e0818059d92c3883017"
+//            )
+//        } catch (e: JSONException) {
+//            e.printStackTrace()
+//        }
+//        req.ok(jsonObject)
+//    }
 
     /**
      * 对应小程序wx.getUserProfile调用

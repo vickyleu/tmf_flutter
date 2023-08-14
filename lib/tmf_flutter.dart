@@ -2,10 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/services.dart';
 import 'package:tmf_flutter/src/messages.g.dart';
 export 'package:tmf_flutter/src/messages.g.dart';
 
+typedef MethodChannelImpl = Future<dynamic> Function(MethodCall);
+
+
 class TmfFlutter extends TmfFlutterApi{
+  static const String TMF_CHANNEL = "com.uooc.tmf_channel";
 
   TmfFlutter(){
     TmfFlutterApi.setup(this);
@@ -15,6 +20,11 @@ class TmfFlutter extends TmfFlutterApi{
 
   Future<void> initTmf() {
     return _api.initTmf();
+  }
+
+  registerCallback(MethodChannelImpl impl){
+    const channel = MethodChannel(TMF_CHANNEL);
+    channel.setMethodCallHandler(impl);
   }
 
   Future<bool> loginTmf({required String account,required String password,bool isOpenLogin=true}) {

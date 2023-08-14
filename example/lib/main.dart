@@ -20,7 +20,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _tmfFlutterPlugin.initTmf().then((value) async {
+    _tmfFlutterPlugin..registerCallback((call)async{
+
+    })
+        .initTmf().then((value) async {
       //tmf://applet/?appId=tmf50bbymfr06vcixz&type=1&businessId=6991&timestamp=1689323164448
       _tmfFlutterPlugin
           ..setLogoutCallback((){

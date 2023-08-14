@@ -2,15 +2,18 @@ package com.uoocuniversity.tmf_flutter.jsplugin
 
 import android.util.Log
 import com.tencent.tmf.mini.api.TmfMiniSDK
-import com.tencent.tmfmini.sdk.MiniSDK
 import com.tencent.tmfmini.sdk.annotation.JsEvent
 import com.tencent.tmfmini.sdk.annotation.JsPlugin
 import com.tencent.tmfmini.sdk.launcher.core.model.RequestEvent
 import com.tencent.tmfmini.sdk.launcher.core.plugins.BaseJsPlugin
 import com.uoocuniversity.tmf_flutter.CommonApp
 import com.uoocuniversity.tmf_flutter.TmfFlutterPlugin
-import com.uoocuniversity.tmf_flutter.src.TmfFlutterApi
 import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -47,6 +50,26 @@ class CustomPlugin : BaseJsPlugin() {
     fun log(req: RequestEvent) {
         Log.wtf(CommonApp.TAG, "log=>${req.jsonParams}")
         req.ok(JSONObject())
+    }
+    private val job = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+
+    @JsEvent("getToken")
+    fun getToken(req: RequestEvent){
+        Log.wtf(CommonApp.TAG, "log=>${req.jsonParams}")
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("key", "test")
+            coroutineScope.launch {
+                withContext(Dispatchers.IO){
+                    PluginChannel.processJsEvent(req.activityRef.get(),"getToken",jsonObject)
+                    req.ok(jsonObject)
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            req.fail(e.message)
+        }
     }
 
     @JsEvent("destroyTMF")

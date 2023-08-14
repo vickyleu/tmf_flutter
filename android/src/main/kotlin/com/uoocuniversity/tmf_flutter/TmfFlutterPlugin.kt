@@ -2,12 +2,16 @@ package com.uoocuniversity.tmf_flutter
 
 import android.app.Activity
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import android.util.Log
 import android.widget.Toast
 import com.tencent.tmf.base.api.utils.AppUtil
 import com.tencent.tmf.mini.api.TmfMiniSDK
@@ -24,8 +28,20 @@ import com.uoocuniversity.tmf_flutter.src.impl.CommonSp
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
 
 /** TmfFlutterPlugin */
 class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
@@ -53,7 +69,8 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
         }
 
     companion object {
-        private var flutterApi:TmfFlutterApi?=null
+        const val TMF_CHANNEL = "com.uooc.tmf_channel"
+        private var flutterApi: TmfFlutterApi? = null
         fun create(context: Context) {
             CommonApp.get().onCreate(context.applicationContext as Application)
             val builder = MiniInitConfig.Builder()
@@ -61,7 +78,7 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
             val config = builder
                 .verifyPkg(false) //可选
                 .imei(CommonApp.IMEI) //可选  TODO 设备唯一标识符,目前是写死的
-                .debug(true)
+                .debug(false)
                 .privacyAuth(true) //隐私授权
                 .build()
             TmfMiniSDK.init(context.applicationContext as Application, config)
@@ -78,8 +95,8 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
             }
         }
 
-        fun logout(){
-            flutterApi?.logout {  }
+        fun logout() {
+            flutterApi?.logout { }
         }
     }
 
@@ -195,11 +212,49 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         TmfHostApi.setUp(binding.binaryMessenger, this)
         flutterApi = TmfFlutterApi(binding.binaryMessenger)
+        privateChannel = MethodChannel(binding.binaryMessenger, TMF_CHANNEL)
+        binding.applicationContext.registerReceiver(
+            communicationBroadcast,
+            IntentFilter("com.uooc.tmf_channel")
+        )
+    }
+
+    private val communicationBroadcast = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent == null) return
+            val broadcast = this
+            if (intent.action == "com.uooc.tmf_channel") {
+                val channel = privateChannel
+                val aware = mActivityAware
+                if (channel == null || aware == null) return
+                val value = intent.getStringExtra("key")
+                val currentResult = goAsync() // 使用此方法让广播接收器保持活动状态
+                coroutineScope.launch {
+                    when (value) {
+                        "getToken" -> {
+                            async {
+                                val token = """
+                                {"token":"${getTokenFromFlutter()}"}
+                            """.trimIndent()
+                                withContext(Dispatchers.Main){
+                                    currentResult.resultData = token
+                                    currentResult.finish()
+                                }
+                            }.await()
+                        }
+                        else -> {
+                            currentResult.finish()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         TmfHostApi.setUp(binding.binaryMessenger, null)
         flutterApi = null
+        binding.applicationContext.unregisterReceiver(communicationBroadcast)
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
@@ -208,5 +263,33 @@ class TmfFlutterPlugin : FlutterPlugin, ActivityAware, TmfHostApi {
 
     override fun onDetachedFromActivity() {
         onDetachedFromActivityForConfigChanges()
+    }
+    private val job = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+
+    private var privateChannel: MethodChannel? = null
+    private suspend fun getTokenFromFlutter(): String? {
+        val channel = privateChannel ?: return null
+        return withContext(Dispatchers.IO){
+            val completer = CompletableDeferred<String?>()
+            withContext(Dispatchers.Main){
+                channel.invokeMethod("getToken", null, object : MethodChannel.Result {
+                    override fun success(result: Any?) {
+                        completer.complete(result as? String)
+                    }
+
+                    override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                        Log.wtf("processJsEvent", "getToken errorMessage:$errorMessage")
+                        completer.completeExceptionally(Exception(errorMessage))
+                    }
+
+                    override fun notImplemented() {
+                        Log.wtf("processJsEvent", "getToken notImplemented")
+                        completer.completeExceptionally(NotImplementedError("getToken not implemented"))
+                    }
+                })
+            }
+            completer.await()
+        }
     }
 }
